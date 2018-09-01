@@ -3,6 +3,9 @@ api_version: 1
 threadsafe: true
 service: beta
 
+error_handlers:
+    - file: static/maintenance.html
+
 handlers:
     - url: /.*
       script: server.app
