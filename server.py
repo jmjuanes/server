@@ -1,15 +1,27 @@
 import os
-import webapp2
 import logging
 import mimetypes
+
+import webapp2
 import cloudstorage as gcs
 
 from google.appengine.api import app_identity
 
-# Send an error
-def send_error(self, code, message):
+# Get the bucket name
+bucket_name = os.environ.get("BUCKET_NAME", app_identity.get_default_gcs_bucket_name())
+
+# Render an error message
+def render_error(self, code, message):
     self.response.set_status(code)
     return self.response.write(message)
+
+# Render a static fil
+def render_static(self, file_name):
+    file_path = os.path.join(os.path.dirname(__file__), "static/" + file_name)
+    with open(file_path, "r") as f:
+        file_content = f.read()
+    self.response.content_type = "text/html"
+    return self.response.write(file_content)
 
 # Parse the filename of a path
 def parse_filename(path):
@@ -40,26 +52,25 @@ class MainHandler(webapp2.RequestHandler):
             return self.redirect("https://www.siimple.xyz")
         # Ignore favicon path
         if self.request.path == "/favicon.ico":
-            return send_error(self, 404, "Not found")
+            return render_error(self, 404, "Not found")
         # Get the service
         service_name = parse_subdomain(self.request.host)
-        # Get the bucket name
-        bucket_name = os.environ.get("BUCKET_NAME", app_identity.get_default_gcs_bucket_name())
         try:
             # Get the file path to open
             file_name = parse_filename(self.request.path)
             file_path = "/" + bucket_name + "/" + service_name + file_name
-            # Write the mimetype
-            self.response.content_type = get_mimetype(file_name)
             # Open the file from cloud storage
             gcs_file = gcs.open(file_path)
             file_content = gcs_file.read()
             gcs_file.close()
             # Send the file content and finishe the request
+            self.response.content_type = get_mimetype(file_name)
             return self.response.write(file_content)
         except:
-            return send_error(self, 404, "Not found")
-        return send_error(self, 500, "Internal server error")
+            # Render the 404 error page
+            self.response.set_status(404)
+            return render_static(self, "error_404.html")
+        return render_error(self, 500, "Internal server error")
 
 # Create the app
 app = webapp2.WSGIApplication([
