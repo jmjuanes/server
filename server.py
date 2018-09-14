@@ -41,7 +41,7 @@ def parse_subdomain(host):
 # Get the mimetype from an extension
 # Extracted from: https://stackoverflow.com/a/45459425
 def get_mimetype(filename):
-    file_type, file_encoding = mimetypes.guess_type(filename)
+    file_type = mimetypes.guess_type(filename)[0]
     return file_type or "application/octet-stream"
 
 # Main web handler
@@ -50,7 +50,7 @@ class MainHandler(webapp2.RequestHandler):
         # Check for redirection domain
         if self.request.host in config["redirects"]:
             return self.redirect(config["redirects"][sef.request.host])
-        # Check for ignore paths
+        # Check for ignored path
         if self.request.path in config["ignore_paths"]:
             return render_error(self, 404, "Not found")
         # Get the service
