@@ -63,7 +63,7 @@ class MainHandler(webapp2.RequestHandler):
         try:
             # Get the GCS file path
             subdomain = get_subdomain(self.request)
-            file_object["storage_path"] = "/" + config["bucket_name"] + "/" + subdomain + file_object["path"]
+            file_object["storage_path"] = "/" + config["bucket_name"] + "/" + subdomain + file_object["pathname"]
             # logging.warning("Reading file " + file_object["storage_path"])
             # Open the file from cloud storage
             gcs_file = gcs.open(file_object["storage_path"], mode="r")
@@ -85,6 +85,7 @@ class MainHandler(webapp2.RequestHandler):
         except:
             # Render the 404 error page
             logging.error("Error reading file from " + file_object["storage_path"])
+            logging.error("Requested path: " + file_object["pathname"])
             return render_static(self, 404, "error.html")
         # Something went wrong
         logging.critical("Internal error reading file from " + file_object["storage_path"])
