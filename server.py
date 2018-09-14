@@ -56,8 +56,13 @@ class MainHandler(webapp2.RequestHandler):
         # Get the service
         service_name = parse_subdomain(self.request.host)
         try:
-            # Get the file path to open
-            file_name = parse_filename(self.request.path)
+            # Parse the file name
+            file_ext = os.path.splitext(self.request.path)[1]
+            if file_ext == "":
+                file_name = os.path.join(self.request.path, config["entry_file"])
+            else:
+                file_name = self.request.path
+            # Get the GCS file path
             file_path = "/" + config["bucket_name"] + "/" + service_name + file_name
             # Open the file from cloud storage
             gcs_file = gcs.open(file_path)
@@ -65,6 +70,11 @@ class MainHandler(webapp2.RequestHandler):
             gcs_file.close()
             # Send the file content and finishe the request
             self.response.content_type = get_mimetype(file_name)
+            # Check for not HTML filei to add the cache header
+            # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
+            # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
+            if file_ext != ".html":
+                self.response.headers.add("Cache-Control", "private, max-age=3600")
             return self.response.write(file_content)
         except:
             # Render the 404 error page
