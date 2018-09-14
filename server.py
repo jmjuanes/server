@@ -64,6 +64,7 @@ class MainHandler(webapp2.RequestHandler):
                 file_name = self.request.path
             # Get the GCS file path
             file_path = "/" + config["bucket_name"] + "/" + service_name + file_name
+            # logging.warning("Reading file " + file_path)
             # Open the file from cloud storage
             gcs_file = gcs.open(file_path)
             file_content = gcs_file.read()
@@ -74,7 +75,12 @@ class MainHandler(webapp2.RequestHandler):
             # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
             # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
             if file_ext != ".html":
-                self.response.headers.add("Cache-Control", "private, max-age=3600")
+                # Save on cache for 1 hour
+                self.response.headers["Cache-Control"] = "private, max-age=3600"
+            else:
+                # Do not save on cache
+                self.response.headers["Cache-Control"] = "no-cache"
+            # Write the file content and finish the request
             return self.response.write(file_content)
         except:
             # Render the 404 error page
