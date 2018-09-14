@@ -1,14 +1,14 @@
 import os
 import logging
 import mimetypes
+import json
 
 import webapp2
 import cloudstorage as gcs
 
-from google.appengine.api import app_identity
-
-# Get the bucket name
-bucket_name = os.environ.get("BUCKET_NAME", app_identity.get_default_gcs_bucket_name())
+# Import configuration
+with open("config.json") as f:
+    config = json.load(f)
 
 # Render an error message
 def render_error(self, code, message):
@@ -27,14 +27,14 @@ def render_static(self, file_name):
 def parse_filename(path):
     file_name, file_ext = os.path.splitext(path)
     if file_ext == "":
-        path = os.path.join(path, "index.html")
+        path = os.path.join(path, config["entry_file"])
     return path
 
 # Extract the subdoman
 def parse_subdomain(host):
     subdomain = ".".join(host.split(".")[:-2])
     if subdomain == "":
-        return "www"
+        return config["root_subdomain"]
     else:
         return subdomain
 
@@ -47,18 +47,18 @@ def get_mimetype(filename):
 # Main web handler
 class MainHandler(webapp2.RequestHandler):
     def get(self, *args, **kwargs):
-        # Check for siimple.juanes.xyz domain
-        if self.request.host == "siimple.juanes.xyz":
-            return self.redirect("https://www.siimple.xyz")
-        # Ignore favicon path
-        if self.request.path == "/favicon.ico":
+        # Check for redirection domain
+        if self.request.host in config["redirects"]:
+            return self.redirect(config["redirects"][sef.request.host])
+        # Check for ignore paths
+        if self.request.path in config["ignore_paths"]:
             return render_error(self, 404, "Not found")
         # Get the service
         service_name = parse_subdomain(self.request.host)
         try:
             # Get the file path to open
             file_name = parse_filename(self.request.path)
-            file_path = "/" + bucket_name + "/" + service_name + file_name
+            file_path = "/" + config["bucket_name"] + "/" + service_name + file_name
             # Open the file from cloud storage
             gcs_file = gcs.open(file_path)
             file_content = gcs_file.read()
@@ -69,11 +69,11 @@ class MainHandler(webapp2.RequestHandler):
         except:
             # Render the 404 error page
             self.response.set_status(404)
-            return render_static(self, "error_404.html")
+            return render_static(self, "error.html")
         return render_error(self, 500, "Internal server error")
 
 # Create the app
 app = webapp2.WSGIApplication([
-    webapp2.Route('/<:.*>', handler=MainHandler)
+        webapp2.Route('/<:.*>', handler=MainHandler)
     ], debug=True)
 
