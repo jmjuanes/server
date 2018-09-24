@@ -4,6 +4,7 @@ import mimetypes
 import json
 
 import webapp2
+from google.appengine.ext.webapp import template
 import cloudstorage as gcs
 
 # Import configuration
@@ -15,14 +16,11 @@ def render_error(self, code, message):
     self.response.set_status(code)
     return self.response.write(message)
 
-# Render a static fil
-def render_static(self, code, file_name):
-    file_path = os.path.join(os.path.dirname(__file__), "static/" + file_name)
-    with open(file_path, "r") as f:
-        file_content = f.read()
+# Render a template file
+def render_template(self, template_name, template_values):
+    template_path = os.path.join(os.path.dirname(__file__), "templates/" + template_name)
     self.response.content_type = "text/html"
-    self.response.set_status(code)
-    return self.response.write(file_content)
+    return self.response.write(template(template_path, template_values))
 
 # Parse a path and get the file object information
 def parse_file(request):
@@ -86,7 +84,8 @@ class MainHandler(webapp2.RequestHandler):
             logging.error("Error reading file from " + file_object["storage_path"])
             logging.error("Requested path: " + file_object["pathname"])
             # Render the 404 error page
-            return render_static(self, 404, "error.html")
+            self.response.set_status(404)
+            return render_template(self, "not-found.html", {})
         # Something went wrong
         logging.critical("Internal error reading file from " + file_object["storage_path"])
         return render_error(self, 500, "Internal server error")
