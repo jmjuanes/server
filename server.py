@@ -67,7 +67,7 @@ class MainHandler(webapp2.RequestHandler):
         # Get the GCS file path
         # It has the structure "/<BUCKET>/<SUBDOMAIN>/<FILE_PATH>"
         subdomain = get_subdomain(self.request)
-        file_object["storage_path"] = "/" + config["bucket"] + "/" + subdomain + file_object["pathname"]
+        file_object["storage_path"] = "/" + config["bucket"] + subdomain + file_object["pathname"]
         try:
             # Open the file from cloud storage
             # logging.warning("Reading file " + file_object["storage_path"])
@@ -78,7 +78,7 @@ class MainHandler(webapp2.RequestHandler):
             # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
             # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
             if file_object["extname"] not in config["cache"]["ignore"]:
-                self.response.headers["Cache-Control"] = config["cache"]["header"]
+                self.response.headers["Cache-Control"] = config["cache"]["default"]
             else:
                 self.response.headers["Cache-Control"] = "no-cache"
             # Set the mime-type
