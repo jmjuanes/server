@@ -46,7 +46,7 @@ def get_subdomain(request):
     if subdomain in config["subdomain"]["mappings"]:
         return config["subdomain"]["mappings"][subdomain]
     else:
-        return "/" + subdomain + "/"
+        return "/" + subdomain
 
 # Get the mimetype from an extension
 # Extracted from: https://stackoverflow.com/a/45459425
