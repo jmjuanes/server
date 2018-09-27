@@ -41,7 +41,12 @@ def parse_file(request):
 # Get the subdomain of the request host
 def get_subdomain(request):
     subdomain = ".".join(request.host.split(".")[:-2])
-    return config["root_subdomain"] if subdomain == "" else subdomain
+    subdomain = config["subdomain"]["default"] if subdomain == "" else subdomain
+    # Check for special subdomain mapping
+    if subdomain in config["subdomain"]["mappings"]:
+        return config["subdomain"]["mappings"][subdomain]
+    else:
+        return "/" + subdomain + "/"
 
 # Get the mimetype from an extension
 # Extracted from: https://stackoverflow.com/a/45459425
