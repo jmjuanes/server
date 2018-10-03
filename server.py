@@ -28,7 +28,7 @@ def get_subdomain(hostname):
 
 # Get the extname from a path
 def get_extname(path):
-    return os.path.splittext(path)[1]
+    return os.path.splitext(path)[1]
 
 # Get the mimetype from a path
 # Extracted from: https://stackoverflow.com/a/45459425
