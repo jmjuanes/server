@@ -42,10 +42,10 @@ class MainHandler(webapp2.RequestHandler):
         if self.request.host in config["host"]["redirects"]:
             return self.redirect(config["host"]["redirects"][sef.request.host])
         # Check for ignored path
-        if self.request.path in config["paths"]["ignore"]:
+        if self.request.path in config["ignorePaths"]:
             return render_error(self, 404, "Not found")
         # Get the GCS file path
-        file_path = "/" + config["bucket"] + config["directory"]["root"]
+        file_path = "/" + config["storage"]["bucket"] + config["storage"]["directoryRoot"]
         # Check for subdomain mapping
         if config["host"]["subdomains"]["mapToFolder"] == True:
             subdomain = get_subdomain(self.request.host)
@@ -53,8 +53,8 @@ class MainHandler(webapp2.RequestHandler):
             if subdomain == "":
                 subdomain = config["host"]["subdomains"]["default"]
             # Check for special subdomain mapping
-            # if subdomain in config["subdomain"]["mappings"]:
-            #     subdomain = config["subdomain"]["mappings"]
+            # if subdomain in config["host"]["subdomain"]["mappings"]:
+            #     subdomain = config["host"]["subdomain"]["mappings"]
             # Append the subdomain folder to the file path
             file_path = file_path + subdomain + "/"
         # Add the requested path
@@ -62,7 +62,7 @@ class MainHandler(webapp2.RequestHandler):
         # Check the extension of the file
         file_extname = get_extname(file_path)
         if file_extname == "":
-            file_path = file_path + config["directory"]["index"]
+            file_path = file_path + config["storage"]["directoryIndex"]
             file_extname = get_extname(file_path)
         # Normalize the generated path
         file_path = os.path.normpath(file_path)
@@ -72,13 +72,15 @@ class MainHandler(webapp2.RequestHandler):
             gcs_file = gcs.open(file_path, mode="r")
             file_content = gcs_file.read()
             gcs_file.close()
-            # Check if this file should be cached
-            # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
-            # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
-            if file_extname not in config["cache"]["ignore"]:
-                self.response.headers["Cache-Control"] = config["cache"]["default"]
-            else:
-                self.response.headers["Cache-Control"] = "no-cache"
+            # Check if cache is enabled
+            if config["cache"]["enabled"] == True:
+                # Check if this file should be cached
+                # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
+                # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
+                if file_extname not in config["cache"]["ignore"]:
+                    self.response.headers["Cache-Control"] = config["cache"]["default"]
+                else:
+                    self.response.headers["Cache-Control"] = "no-cache"
             # Write the file content and finish the request
             self.response.content_type = get_mimetype(file_path)
             return self.response.write(file_content)
