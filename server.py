@@ -80,7 +80,7 @@ class MainHandler(webapp2.RequestHandler):
                 # https://cloud.google.com/appengine/docs/standard/python/config/appref#static_cache_expiration
                 # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
                 if file_extname not in config["cache"]["ignore"]:
-                    self.response.headers["Cache-Control"] = "" + config["cache"]["default"]
+                    self.response.headers["Cache-Control"] = str(config["cache"]["default"])
                 else:
                     self.response.headers["Cache-Control"] = "no-cache"
             # Write the file content and finish the request
