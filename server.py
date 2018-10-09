@@ -12,11 +12,11 @@ with open(os.path.join(os.path.dirname(__file__), "config.json")) as f:
     config = json.load(f)
 
 # Render an error message
-def render_error(self, code, template):
+def render_error(self, code, template_content):
     template_path = os.path.join(os.path.dirname(__file__), "templates/error.html")
     template_values = {
         "site": config["site"], 
-        "content": config["templates"][template]
+        "content": config["templates"][template_content]
     }
     # Update the response
     self.response.set_status(code)
