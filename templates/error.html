@@ -48,13 +48,11 @@
         opacity: 0.8;
     }
 </style>
-<title>Page not found</title>
+<title>{{ title }}</title>
 <div class="main">
     <div class="content" align="center">
-        <div class="heading">Not found</div>
-        <div class="paragraph">
-            We are sorry, but it appears you have entered a URL that does not exist on our site.
-        </div>
+        <div class="heading">{{ title }}</div>
+        <div class="paragraph">{{ message }}</div>
         <a href="/" class="button">Back to home</a>
     </div>
 </div>
