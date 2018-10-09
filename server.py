@@ -22,7 +22,7 @@ def render_error(self, code, template_content):
     self.response.set_status(code)
     self.response.content_type = "text/html"
     # Send the error page
-    return self.response.write(template(template_path, template_values))
+    return self.response.write(template.render(template_path, template_values))
 
 # Get the subdomain of the request host
 def get_subdomain(hostname):
