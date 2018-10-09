@@ -12,14 +12,16 @@ with open(os.path.join(os.path.dirname(__file__), "config.json")) as f:
     config = json.load(f)
 
 # Render an error message
-def render_error(self, code, message):
+def render_error(self, code, template):
+    template_path = os.path.join(os.path.dirname(__file__), "templates/error.html")
+    template_values = {
+        "site": config["site"], 
+        "content": config["templates"][template]
+    }
+    # Update the response
     self.response.set_status(code)
-    return self.response.write(message)
-
-# Render a template file
-def render_template(self, template_name, template_values):
-    template_path = os.path.join(os.path.dirname(__file__), "templates/" + template_name)
     self.response.content_type = "text/html"
+    # Send the error page
     return self.response.write(template(template_path, template_values))
 
 # Get the subdomain of the request host
@@ -43,7 +45,7 @@ class MainHandler(webapp2.RequestHandler):
             return self.redirect(config["host"]["redirects"][sef.request.host])
         # Check for ignored path
         if self.request.path in config["ignorePaths"]:
-            return render_error(self, 404, "Not found")
+            return self.abort(404)
         # Get the GCS file path
         file_path = "/" + config["storage"]["bucket"] + config["storage"]["directoryRoot"]
         # Check for subdomain mapping
@@ -88,11 +90,10 @@ class MainHandler(webapp2.RequestHandler):
             logging.error("Error reading file from " + file_path)
             logging.error("Requested path: " + self.request.path)
             # Render the 404 error page
-            self.response.set_status(404)
-            return render_template(self, "not-found.html", {})
+            return render_error(self, 404, "not-found")
         # Something went wrong
         logging.critical("Internal error reading file from " + file_path)
-        return render_error(self, 500, "Internal server error")
+        return self.abort(500)
 
 # Create the app
 app = webapp2.WSGIApplication([
