@@ -3,6 +3,12 @@ import os
 import mimetypes
 import json
 
+# Read a configuration file
+def read_config(config_path):
+    with open(os.path.join(os.path.dirname(__file__), config_path)) as f:
+        config_data = json.load(f)
+    return config_data
+
 # Get the subdomain of the request host
 def get_subdomain(hostname):
     return ".".join(hostname.split(".")[:-2])
