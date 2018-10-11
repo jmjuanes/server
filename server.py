@@ -1,15 +1,16 @@
 import os
 import logging
-import mimetypes
 import json
 
 import webapp2
 from google.appengine.ext.webapp import template
 import cloudstorage as gcs
 
+# Import local libs
+import utils
+
 # Import configuration
-with open(os.path.join(os.path.dirname(__file__), "config.json")) as f:
-    config = json.load(f)
+config = utils.read_config("config.json")
 
 # Render an error message
 def render_error(self, code, template_content):
@@ -24,19 +25,6 @@ def render_error(self, code, template_content):
     # Send the error page
     return self.response.write(template.render(template_path, template_values))
 
-# Get the subdomain of the request host
-def get_subdomain(hostname):
-    return ".".join(hostname.split(".")[:-2])
-
-# Get the extname from a path
-def get_extname(path):
-    return os.path.splitext(path)[1]
-
-# Get the mimetype from a path
-# Extracted from: https://stackoverflow.com/a/45459425
-def get_mimetype(path):
-    return mimetypes.guess_type(path)[0] or "application/octet-stream"
-
 # Main web handler
 class MainHandler(webapp2.RequestHandler):
     def get(self, *args, **kwargs):
@@ -50,7 +38,7 @@ class MainHandler(webapp2.RequestHandler):
         file_path = "/" + config["storage"]["bucket"] + config["storage"]["directoryRoot"]
         # Check for subdomain mapping
         if config["host"]["subdomains"]["mapToFolder"] == True:
-            subdomain = get_subdomain(self.request.host)
+            subdomain = utils.get_subdomain(self.request.host)
             # Check for empty subdomain
             if subdomain == "":
                 subdomain = config["host"]["subdomains"]["default"]
@@ -62,10 +50,10 @@ class MainHandler(webapp2.RequestHandler):
         # Add the requested path
         file_path = file_path + self.request.path
         # Check the extension of the file
-        file_extname = get_extname(file_path)
+        file_extname = utils.get_extname(file_path)
         if file_extname == "":
             file_path = file_path + config["storage"]["directoryIndex"]
-            file_extname = get_extname(file_path)
+            file_extname = utils.get_extname(file_path)
         # Normalize the generated path
         file_path = os.path.normpath(file_path)
         try:
@@ -84,7 +72,7 @@ class MainHandler(webapp2.RequestHandler):
                 else:
                     self.response.headers["Cache-Control"] = "no-cache"
             # Write the file content and finish the request
-            self.response.content_type = get_mimetype(file_path)
+            self.response.content_type = utils.get_mimetype(file_path)
             return self.response.write(file_content)
         except:
             logging.error("Error reading file from " + file_path)
