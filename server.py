@@ -6,7 +6,7 @@ import webapp2
 from google.appengine.ext.webapp import template
 import cloudstorage as gcs
 
-# Import local libs
+# Import local modules
 import utils
 
 # Import configuration
