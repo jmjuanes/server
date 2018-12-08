@@ -16,4 +16,10 @@
 # Other files
 *.swp
 *.pyc
+node_modules
+scripts
+templates
+Makefile
+package-lock.json
+package.json
 
