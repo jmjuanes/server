@@ -1,0 +1,10 @@
+{
+    "name": "siimple-server",
+    "description": "Micro service",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "handlebars": "^4.0.12"
+    }
+}
+
