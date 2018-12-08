@@ -9,7 +9,7 @@ let config = require(path.join(process.cwd(), "config.json"));
 //Build templates
 process.nextTick(function () {
     //Load template file
-    let templatePath = path.join(process.cwd(), "templates", "index.html");
+    let templatePath = path.join(process.cwd(), config.static.template);
     let templateContent = fs.readFileSync(templatePath, "utf8");
     //Generate the handlebars template
     let template = handlebars.compile(templateContent);
@@ -20,12 +20,13 @@ process.nextTick(function () {
         fs.mkdirSync(staticFolder);
     }
     //Build each static file
-    Object.keys(config.staticPages).forEach(function (key) {
+    Object.keys(config.static.pages).forEach(function (key) {
         console.log("Building " + key + " template");
         //Generate the file content
         let content = template({
-            "site": config.site,
-            "content": config.staticPages[key]
+            "home": config.static.home,
+            "links": Object.values(config.static.links),
+            "page": config.static.pages[key]
         });
         //Save the static file
         let staticPath = path.join(staticFolder, key + ".html");
