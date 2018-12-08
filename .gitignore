@@ -1,4 +1,7 @@
 *.pyc
 *.swp
 lib
+node_modules
+static
+package-lock.json
 
