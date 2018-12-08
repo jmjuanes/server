@@ -4,4 +4,5 @@ lib
 node_modules
 static
 package-lock.json
+config.json
 
