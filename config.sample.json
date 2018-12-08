@@ -1,0 +1,43 @@
+{
+    "storage": {
+        "bucket": "storage.appspot.com",
+        "directoryRoot": "/",
+        "directoryIndex": "index.html"
+    },
+    "host": {
+        "redirects": {},
+        "subdomains": {
+            "mapToFolder": true,
+            "default": "www"
+        }
+    },
+    "ignorePaths": ["/favicon.ico"],
+    "cache": {
+        "enabled": true,
+        "default": "private, max-age=7200",
+        "ignore": [".html"]
+    },
+    "static": {
+        "home": "https://www.yoursite.com",
+        "template": "templates/index.html",
+        "links": {
+            "contact": {
+                "text": "Contact us",
+                "url": "mailto:support@yoursite.com"
+            }
+        },
+        "pages": {
+            "maintenance": {
+                "title": "Down for maintenance",
+                "message": "Sorry for the inconvenience but we are performing some maintenance at the moment. We expect to be back shortly!",
+                "showHomeButton": false
+            },
+            "not-found": {
+                "title": "Not found",
+                "message": "We are sorry, but it appears you have entered a URL that does not exist on our site.",
+                "showHomeButton": true
+            }
+        }
+    }
+}
+
