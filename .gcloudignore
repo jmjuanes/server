@@ -16,10 +16,15 @@
 # Other files
 *.swp
 *.pyc
+.DS_Store
 node_modules
 scripts
 templates
 Makefile
 package-lock.json
 package.json
+LICENSE
+README.md
+config.sample.json
+requirements.txt
 
