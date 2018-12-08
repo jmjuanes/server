@@ -12,18 +12,14 @@ import utils
 # Import configuration
 config = utils.read_config("config.json")
 
-# Render an error message
-def render_error(self, code, template_content):
-    template_path = os.path.join(os.path.dirname(__file__), "templates/error.html")
-    template_values = {
-        "site": config["site"], 
-        "content": config["templates"][template_content]
-    }
+# Render a static file
+def render_static(self, code, static_file):
+    static_path = os.path.join(os.path.dirname(__file__), "static", static_file + ".html")
     # Update the response
     self.response.set_status(code)
     self.response.content_type = "text/html"
     # Send the error page
-    return self.response.write(template.render(template_path, template_values))
+    return self.response.write(template.render(static_path, {}))
 
 # Main web handler
 class MainHandler(webapp2.RequestHandler):
@@ -78,7 +74,7 @@ class MainHandler(webapp2.RequestHandler):
             logging.error("Error reading file from " + file_path)
             logging.error("Requested path: " + self.request.path)
             # Render the 404 error page
-            return render_error(self, 404, "not-found")
+            return render_static(self, 404, "not-found")
         # Something went wrong
         logging.critical("Internal error reading file from " + file_path)
         return self.abort(500)
