@@ -65,25 +65,19 @@
         text-decoration: underline;
     }
 </style>
-<title>{{content.title}}</title>
+<title>{{page.title}}</title>
 <div class="main">
     <div class="content" align="center">
-        <div class="heading">{{content.title}}</div>
-        <div class="paragraph">{{content.message}}</div>
-        {{#if content.showHomeButton}}
-        <a href="{{site.home}}" class="button">Back to home</a>
+        <div class="heading">{{page.title}}</div>
+        <div class="paragraph">{{page.message}}</div>
+        {{#if page.showHomeButton}}
+        <a href="{{home}}" class="button">Back to home</a>
         {{/if}}
     </div>
     <div class="links" align="center">
-        {{#if site.contact}}
-        <a href="{{site.contact}}" class="link">Contact</a>
-        {{/if}}
-        {{#if site.terms}}
-        <a href="{{site.terms}}" class="link">Terms of service</a>
-        {{/if}}
-        {{#if site.privacy}}
-        <a href="{{site.privacy}}" class="link">Privacy Policy</a>
-        {{/if}}
+        {{#each links}}
+        <a href="{{this.url}}" class="link">{{this.text}}</a>
+        {{/each}}
     </div>
 </div>
 
