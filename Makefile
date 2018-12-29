@@ -12,4 +12,6 @@ build:
 	node ./scripts/build.js
 
 # Publish the service
+deploy:
+	gcloud app deploy beta.yaml --project siimple-documentation
 
