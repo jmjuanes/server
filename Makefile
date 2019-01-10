@@ -13,5 +13,5 @@ build:
 
 # Publish the service
 deploy:
-	gcloud app deploy beta.yaml --project siimple-documentation
+	#gcloud app deploy app.yaml --project siimple-documentation
 
