@@ -1,4 +1,5 @@
 {
+    "project": "project-name",
     "storage": {
         "bucket": "storage.appspot.com",
         "directoryRoot": "/",
@@ -11,7 +12,9 @@
             "default": "www"
         }
     },
-    "ignorePaths": ["/favicon.ico"],
+    "ignorePaths": [
+        "/favicon.ico"
+    ],
     "cache": {
         "enabled": true,
         "default": "private, max-age=7200",
