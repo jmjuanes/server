@@ -1,13 +1,17 @@
 # server
 Under development
 
-## Install dependencies
+### Install dependencies
+
+Use `make` to install all dependencies to run this service:
 
 ```
-$ pip install -t lib -r requirements.txt
+$ make install
 ```
 
-## Deploy the service to AppEngine
+### Deploy the service to AppEngine
+
+Deploy your built service to App Engine runnign the following command:
 
 ```
 $ gcloud app deploy app.yaml --project <PROJECT_ID>
