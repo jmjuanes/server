@@ -8,6 +8,6 @@ error_handlers:
 
 handlers:
     - url: /.*
-      script: server.app
+      script: src.server.app
       secure: always
 
