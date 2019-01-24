@@ -4,5 +4,8 @@ lib
 node_modules
 static
 package-lock.json
-config.json
+
+## Configuration files
+configs/*.json
+!configs/sample.json
 
