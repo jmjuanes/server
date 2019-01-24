@@ -25,5 +25,9 @@ build:
 
 # Publish the service
 deploy:
-	gcloud app deploy app.yaml --project ${project}
+	@## Get the current project to deploy
+	$(eval SERVER_PROJECT := $(shell node scripts/get-project.js))
+	@echo "Deploying service to project: ${SERVER_PROJECT}"
+	@## Deploy service to google cloud
+	gcloud app deploy app.yaml --project ${SERVER_PROJECT}
 
