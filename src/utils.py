@@ -5,7 +5,8 @@ import json
 
 # Read a configuration file
 def read_config(config_path):
-    with open(os.path.join(os.path.dirname(__file__), config_path)) as f:
+    full_path = os.path.join(os.path.dirname(__file__), config_path) 
+    with open(os.path.normpath(full_path)) as f:
         config_data = json.load(f)
     return config_data
 
