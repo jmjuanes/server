@@ -26,7 +26,8 @@ class MainHandler(webapp2.RequestHandler):
     def get(self, *args, **kwargs):
         # Check for redirection domain
         if self.request.host in config["host"]["redirects"]:
-            return self.redirect(config["host"]["redirects"][self.request.host])
+            redirect_url = str(config["host"]["redirects"][self.request.host])
+            return self.redirect(redirect_url)
         # Check for ignored path
         if self.request.path in config["ignorePaths"]:
             return self.abort(404)
