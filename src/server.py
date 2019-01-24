@@ -14,12 +14,12 @@ config = utils.read_config("../config.json")
 
 # Render a static file
 def render_static(self, code, static_file):
-    static_path = os.path.join(os.path.dirname(__file__), "static", static_file + ".html")
+    static_path = os.path.join(os.path.dirname(__file__), "../static", static_file + ".html")
     # Update the response
     self.response.set_status(code)
     self.response.content_type = "text/html"
     # Send the error page
-    return self.response.write(template.render(static_path, {}))
+    return self.response.write(template.render(os.path.normpath(static_path), {}))
 
 # Main web handler
 class MainHandler(webapp2.RequestHandler):
