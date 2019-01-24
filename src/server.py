@@ -10,7 +10,7 @@ import cloudstorage as gcs
 import utils
 
 # Import configuration
-config = utils.read_config("config.json")
+config = utils.read_config("../config.json")
 
 # Render a static file
 def render_static(self, code, static_file):
