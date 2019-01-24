@@ -6,9 +6,6 @@ static
 package-lock.json
 
 ## Configuration files
+config.json
 configs/*.json
-!configs/sample.json
-
-## Deploy folder
-deploy
 
