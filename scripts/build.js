@@ -4,17 +4,17 @@ let path = require("path");
 let handlebars = require("handlebars");
 
 //Import configuration file
-let config = require(path.join(process.cwd(), "config.json"));
+let config = require(path.join(process.cwd(), "deploy", "config.json"));
 
 //Build templates
 process.nextTick(function () {
     //Load template file
-    let templatePath = path.join(process.cwd(), config.static.template);
+    let templatePath = path.join(process.cwd(), "templates", "index.html");
     let templateContent = fs.readFileSync(templatePath, "utf8");
     //Generate the handlebars template
     let template = handlebars.compile(templateContent);
     //Output static files path
-    let staticFolder = path.join(process.cwd(), "static");
+    let staticFolder = path.join(process.cwd(), "deploy", "static");
     //Chekc if the static folder exists
     if (fs.existsSync(staticFolder) === false) {
         fs.mkdirSync(staticFolder);
